@@ -66,4 +66,4 @@ pub fn getenv_bang(key: String) -> rustler::NifResult<String> {
     Ok(_getenv(key)?)
 }
 
-init!("Elixir.Test", [getenv, getenv_bang]);
+init!("Elixir.NIF", [getenv, getenv_bang]);

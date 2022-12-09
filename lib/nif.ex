@@ -1,7 +1,7 @@
-defmodule Test do
+defmodule NIF do
   use Rustler,
     otp_app: :rustler_raise_error,
-    crate: :test
+    crate: :nif
 
   # When loading a NIF module, dummy clauses for all NIF function are required.
   # NIF dummies usually just error out when called when the NIF is not loaded,
