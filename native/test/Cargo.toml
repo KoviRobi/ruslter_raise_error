@@ -10,5 +10,4 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-libftd2xx = "0.32.1"
-rustler = "0.26.0"
+rustler = { git = "https://github.com/KoviRobi/rustler.git", rev = "4830c70c675ad968885d85a5ab08e316fa963732" }
