@@ -10,4 +10,5 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+libftd2xx = "0.32.1"
 rustler = "0.26.0"

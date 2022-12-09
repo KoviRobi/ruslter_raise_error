@@ -7,6 +7,7 @@
     in
     {
       devShells.${system}.default = pkgs.mkShell {
+        ERL_AFLAGS = "-kernel shell_history enabled";
         buildInputs = with pkgs; [
           beam.packages.erlangR24.erlang
           beam.packages.erlangR24.elixir
