@@ -10,7 +10,9 @@
         buildInputs = with pkgs; [
           beam.packages.erlangR24.erlang
           beam.packages.erlangR24.elixir
+          beam.packages.erlangR24.elixir_ls
           rustup
+          rust-analyzer
         ];
       };
     };
