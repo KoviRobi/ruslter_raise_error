@@ -8,5 +8,5 @@ defmodule Test do
   # as that should never normally happen.
   def getenv(_args), do: :erlang.nif_error(:nif_not_loaded)
 
-  def getenv_bang(_args), do: :erlang.nif_error(:nif_not_loaded)
+  def getenv!(_args), do: :erlang.nif_error(:nif_not_loaded)
 end

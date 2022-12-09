@@ -61,7 +61,7 @@ pub fn getenv(key: String) -> Result<String, MyError> {
     _getenv(key)
 }
 
-#[nif]
+#[nif(name = "getenv!")]
 pub fn getenv_bang(key: String) -> rustler::NifResult<String> {
     Ok(_getenv(key)?)
 }

@@ -67,8 +67,7 @@ checksum = "456c603be3e8d448b072f410900c09faf164fbce2d480456f50eea6e25f9c848"
 [[package]]
 name = "rustler"
 version = "0.26.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d61e8ddf75de20513455d7b6f17241a595abbb01b53a6340cecc798a1b13422d"
+source = "git+https://github.com/KoviRobi/rustler.git?rev=4830c70c675ad968885d85a5ab08e316fa963732#4830c70c675ad968885d85a5ab08e316fa963732"
 dependencies = [
  "lazy_static",
  "rustler_codegen",
@@ -78,8 +77,7 @@ dependencies = [
 [[package]]
 name = "rustler_codegen"
 version = "0.26.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "baa2e45c0165272070f80ce93bcd7dd5407a3c84a1ef73ab9900e00f00ef3d36"
+source = "git+https://github.com/KoviRobi/rustler.git?rev=4830c70c675ad968885d85a5ab08e316fa963732#4830c70c675ad968885d85a5ab08e316fa963732"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -90,8 +88,7 @@ dependencies = [
 [[package]]
 name = "rustler_sys"
 version = "2.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ff26a42e62d538f82913dd34f60105ecfdffbdb25abdc3c3580b0c622285332"
+source = "git+https://github.com/KoviRobi/rustler.git?rev=4830c70c675ad968885d85a5ab08e316fa963732#4830c70c675ad968885d85a5ab08e316fa963732"
 dependencies = [
  "regex",
  "unreachable",
