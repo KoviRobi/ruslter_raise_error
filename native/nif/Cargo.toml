@@ -1,11 +1,11 @@
 [package]
-name = "test"
+name = "nif"
 version = "0.1.0"
 authors = []
 edition = "2018"
 
 [lib]
-name = "test"
+name = "nif"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 

@@ -1,21 +1,19 @@
-# RustlerRaiseError
+# Rustler Error
 
-**TODO: Add description**
+My attempt at getting Rust's `?` working for Rustler, both `{:ok, _}`/`{:error,
+_}` variants and raising exceptions.
 
-## Installation
+To try it out (make sure you have elixir and rust):
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `rustler_raise_error` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:rustler_raise_error, "~> 0.1.0"}
-  ]
-end
+```console
+$ mix deps.get
+$ iex -S mix
+iex> NIF.getenv("FOO")
+{:error, "Variable not set: environment variable not found"}
+iex> NIF.getenv!("FOO")
+** (ErlangError) Erlang error: "Variable not set: environment variable not found"
+    (rustler_raise_error 0.1.0) NIF.getenv!("FOO")
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/rustler_raise_error>.
-
+But of course, the code is more interesting than the use of it (because this is
+a small example)
