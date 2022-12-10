@@ -5,40 +5,58 @@ use std::io::{Error as IoError, ErrorKind as IoErrorKind, Write};
 
 use rustler::{init, nif, Encoder};
 
-pub struct MyError {
+trait ErrorContext {
+    fn describe<'a>() -> &'a str;
+}
+pub struct MyError<Context> {
     message: String,
+    phantom: std::marker::PhantomData<Context>,
 }
 
-impl<E: Error + 'static> From<E> for MyError {
+impl<E: Error + 'static, C: ErrorContext> From<E> for MyError<C> {
     fn from(error: E) -> Self {
         let reference: &dyn Error = &error;
         let message = || {
             match reference.downcast_ref::<IoError>().map(IoError::kind) {
                 Some(IoErrorKind::PermissionDenied) => {
-                    return format!("Error: permission denied: {}", reference)
+                    return format!(
+                        "Error in {}: permission denied: {}",
+                        C::describe(),
+                        reference
+                    )
                 }
                 _ => (),
             }
-            format!("Error: {}", reference)
+            format!("Error in {}: {}", C::describe(), reference)
         };
 
-        Self { message: message() }
+        Self {
+            message: message(),
+            phantom: std::marker::PhantomData::<C>,
+        }
     }
 }
 
-impl Encoder for MyError {
+impl<T> Encoder for MyError<T> {
     fn encode<'a>(&self, env: rustler::Env<'a>) -> rustler::Term<'a> {
         self.message.encode(env)
     }
 }
 
-impl From<MyError> for rustler::Error {
-    fn from(my_error: MyError) -> Self {
+impl<T> From<MyError<T>> for rustler::Error {
+    fn from(my_error: MyError<T>) -> Self {
         rustler::Error::RaiseTerm(Box::new(my_error.message))
     }
 }
 
-fn _getenv(key: String) -> Result<String, MyError> {
+pub struct GetenvContext;
+impl ErrorContext for GetenvContext {
+    fn describe<'a>() -> &'a str {
+        "getting the environment variable"
+    }
+}
+
+fn _getenv(key: String) -> Result<String, MyError<GetenvContext>> {
     let val = var(&key)?;
     let mut info_file = File::create("var_dump.txt")?;
     write!(
@@ -51,7 +69,7 @@ fn _getenv(key: String) -> Result<String, MyError> {
 }
 
 #[nif]
-pub fn getenv(key: String) -> Result<String, MyError> {
+pub fn getenv(key: String) -> Result<String, MyError<GetenvContext>> {
     _getenv(key)
 }
 
