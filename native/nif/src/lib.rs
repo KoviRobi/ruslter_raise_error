@@ -1,4 +1,5 @@
-use std::env::{var, VarError};
+use std::env::var;
+use std::error::Error;
 use std::fs::File;
 use std::io::{Error as IoError, ErrorKind as IoErrorKind, Write};
 
@@ -8,27 +9,20 @@ pub struct MyError {
     message: String,
 }
 
-impl From<VarError> for MyError {
-    fn from(error: VarError) -> Self {
-        Self {
-            message: match error {
-                VarError::NotPresent => format!("Variable not set: {}", error),
-                _ => format!("Error: {}", error),
-            },
-        }
-    }
-}
+impl<E: Error + 'static> From<E> for MyError {
+    fn from(error: E) -> Self {
+        let reference: &dyn Error = &error;
+        let message = || {
+            match reference.downcast_ref::<IoError>().map(IoError::kind) {
+                Some(IoErrorKind::PermissionDenied) => {
+                    return format!("Error: permission denied: {}", reference)
+                }
+                _ => (),
+            }
+            format!("Error: {}", reference)
+        };
 
-// If specialisation (RFC 1210) is implemented we can do a generic
-// implementation for any error
-impl From<IoError> for MyError {
-    fn from(error: IoError) -> Self {
-        Self {
-            message: match error.kind() {
-                IoErrorKind::PermissionDenied => format!("Permission denied: {}", error),
-                _ => format!("Error: {}", error),
-            },
-        }
+        Self { message: message() }
     }
 }
 
