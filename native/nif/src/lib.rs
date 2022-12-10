@@ -1,4 +1,5 @@
-use std::env::{var, VarError};
+use std::env::var;
+use std::error::Error;
 use std::fs::File;
 use std::io::{Error as IoError, ErrorKind as IoErrorKind, Write};
 
@@ -12,31 +13,25 @@ pub struct MyError<Context> {
     phantom: std::marker::PhantomData<Context>,
 }
 
-impl<C: ErrorContext> From<VarError> for MyError<C> {
-    fn from(error: VarError) -> Self {
-        Self {
-            message: match error {
-                VarError::NotPresent => {
-                    format!("Error {}: variable not set: {}", C::describe(), error)
+impl<E: Error + 'static, C: ErrorContext> From<E> for MyError<C> {
+    fn from(error: E) -> Self {
+        let reference: &dyn Error = &error;
+        let message = || {
+            match reference.downcast_ref::<IoError>().map(IoError::kind) {
+                Some(IoErrorKind::PermissionDenied) => {
+                    return format!(
+                        "Error in {}: permission denied: {}",
+                        C::describe(),
+                        reference
+                    )
                 }
-                _ => format!("Error: {}", error),
-            },
-            phantom: std::marker::PhantomData::<C>,
-        }
-    }
-}
+                _ => (),
+            }
+            format!("Error in {}: {}", C::describe(), reference)
+        };
 
-// If specialisation (RFC 1210) is implemented we can do a generic
-// implementation for any error
-impl<C: ErrorContext> From<IoError> for MyError<C> {
-    fn from(error: IoError) -> Self {
         Self {
-            message: match error.kind() {
-                IoErrorKind::PermissionDenied => {
-                    format!("Error in {}: permission denied: {}", C::describe(), error)
-                }
-                _ => format!("Error: {}", error),
-            },
+            message: message(),
             phantom: std::marker::PhantomData::<C>,
         }
     }
